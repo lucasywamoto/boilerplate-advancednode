@@ -27,8 +27,8 @@ app.use(
 app.set("view engine", "pug");
 app.set("views", "./views/pug");
 
-passport.initialize();
-passport.session();
+app.use(passport.initialize());
+app.use(passport.session());
 
 myDB(async (client) => {
   const myDatabase = await client.db("test").collection("users-fcc");
@@ -64,7 +64,7 @@ myDB(async (client) => {
         } else if (user) {
           res.redirect("/");
         } else {
-          myDataBase.insertOne(
+          myDatabase.insertOne(
             {
               username: req.body.username,
               password: req.body.password,
