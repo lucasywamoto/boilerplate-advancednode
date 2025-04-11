@@ -9,6 +9,8 @@ const routes = require("./routes.js");
 const auth = require("./auth.js");
 const passportSocketIo = require("passport.socketio");
 const cookieParser = require("cookie-parser");
+const connect = require("mongodb");
+const { connected } = require("process");
 
 const app = express();
 
@@ -29,7 +31,7 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
-    cookie: { secure: false },
+    cookie: { secure: true, sameSite: "none" },
     key: "express.sid",
     store: store,
   })
@@ -62,7 +64,11 @@ myDB(async (client) => {
 
   io.on("connection", (socket) => {
     ++currentUsers;
-    io.emit("user count", currentUsers);
+    io.emit("user", {
+      username: socket.request.user.username,
+      currentUsers,
+      connected: true,
+    });
     console.log("A user has connected");
 
     socket.on("disconnect", () => {

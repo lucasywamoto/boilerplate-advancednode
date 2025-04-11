@@ -6,6 +6,15 @@ $(document).ready(function () {
     console.log(data);
   });
 
+  socket.on("user", (data) => {
+    $("#num-users").text(data.currentUsers + " users online");
+    let message =
+      data.username +
+      " has " +
+      (data.connected ? " has joined the chat." : " has left the chat.");
+    $("#messages").append($("<li>").html("<b>" + message + "</b>"));
+  });
+
   // Form submittion with new message in field with id 'm'
   $("form").submit(function () {
     var messageToSend = $("#m").val();
