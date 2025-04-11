@@ -43,6 +43,8 @@ myDB(async (client) => {
 
   io.on("connection", (socket) => {
     console.log("A user has connected");
+    ++currentUsers;
+    io.emit("user count", currentUsers);
   });
 }).catch((e) => {
   app.route("/").get((req, res) => {
