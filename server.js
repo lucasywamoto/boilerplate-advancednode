@@ -8,7 +8,6 @@ const passport = require("passport");
 const routes = require("./routes.js");
 const auth = require("./auth.js");
 const passportSocketIo = require("passport.socketio");
-const MongoStore = require("connect-mongo");
 const cookieParser = require("cookie-parser");
 
 const app = express();
