@@ -29,22 +29,8 @@ module.exports = function (app, myDatabase) {
       },
       function (accessToken, refreshToken, profile, cb) {
         console.log(profile);
-        myDatabase.findAndModify(
+        myDatabase.findOneAndUpdate(
           { id: profile.id },
-          {},
-          {
-            $setOnInsert: {
-              id: profile.id,
-              username: profile.username,
-              name: profile.displayName || "No name",
-              photo: profile.photos[0].value || "",
-              email: Array.isArray(profile.emails)
-                ? profile.emails[0].value
-                : "No public email",
-              created_on: new Date(),
-              provider: profile.provider || "",
-            },
-          },
           {
             $setOnInsert: {
               id: profile.id,
@@ -64,7 +50,7 @@ module.exports = function (app, myDatabase) {
               login_count: 1,
             },
           },
-          { upsert: true, new: true },
+          { upsert: true, nreturnDocument: "after" },
           (err, doc) => {
             return cb(null, doc.value);
           }
