@@ -1,6 +1,8 @@
 "use strict";
 require("dotenv").config();
 const express = require("express");
+const http = require("http").createServer(app);
+const io = require("socket.io")(http);
 const myDB = require("./connection");
 const fccTesting = require("./freeCodeCamp/fcctesting.js");
 const session = require("express-session");
@@ -36,8 +38,8 @@ myDB(async (client) => {
   routes(app, myDatabase);
   auth(app, myDatabase);
 
-  app.use((req, res, next) => {
-    res.status(404).type("text").send("Not Found");
+  io.on("connection", (socket) => {
+    console.log("A user has connected");
   });
 }).catch((e) => {
   app.route("/").get((req, res) => {
@@ -49,6 +51,6 @@ myDB(async (client) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+http.listen(PORT, () => {
   console.log("Listening on port " + PORT);
 });
