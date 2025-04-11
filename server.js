@@ -1,8 +1,6 @@
 "use strict";
 require("dotenv").config();
 const express = require("express");
-const http = require("http").createServer(app);
-const io = require("socket.io")(http);
 const myDB = require("./connection");
 const fccTesting = require("./freeCodeCamp/fcctesting.js");
 const session = require("express-session");
@@ -11,6 +9,9 @@ const routes = require("./routes.js");
 const auth = require("./auth.js");
 
 const app = express();
+
+const http = require("http").createServer(app);
+const io = require("socket.io")(http);
 
 fccTesting(app); //For FCC testing purposes
 app.use("/public", express.static(process.cwd() + "/public"));
