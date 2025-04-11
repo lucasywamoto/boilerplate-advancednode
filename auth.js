@@ -31,6 +31,20 @@ module.exports = function (app, myDatabase) {
         console.log(profile);
         myDatabase.findAndModify(
           { id: profile.id },
+          {},
+          {
+            $setOnInsert: {
+              id: profile.id,
+              username: profile.username,
+              name: profile.displayName || "No name",
+              photo: profile.photos[0].value || "",
+              email: Array.isArray(profile.emails)
+                ? profile.emails[0].value
+                : "No public email",
+              created_on: new Date(),
+              provider: profile.provider || "",
+            },
+          },
           {
             $setOnInsert: {
               id: profile.id,
