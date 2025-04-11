@@ -28,9 +28,10 @@ app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: true,
-    key: "express.sid",
     saveUninitialized: true,
     cookie: { secure: false },
+    key: "express.sid",
+    store: store,
   })
 );
 
