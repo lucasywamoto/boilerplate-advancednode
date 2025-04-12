@@ -19,7 +19,7 @@ const io = require("socket.io")(http);
 
 const MongoStore = require("connect-mongo");
 const URI = process.env.MONGO_URI;
-const store = MongoStore.create({ mongoUrl: URI });
+const store = new MongoStore({ url: URI });
 
 fccTesting(app); //For FCC testing purposes
 app.use("/public", express.static(process.cwd() + "/public"));
