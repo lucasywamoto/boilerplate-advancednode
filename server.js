@@ -17,9 +17,9 @@ const app = express();
 const http = require("http").createServer(app);
 const io = require("socket.io")(http);
 
-const MongoStore = require("connect-mongo")(session);
+const MongoStore = require("connect-mongo");
 const URI = process.env.MONGO_URI;
-const store = new MongoStore({ url: URI });
+const store = MongoStore.create({ mongoUrl: URI });
 
 fccTesting(app); //For FCC testing purposes
 app.use("/public", express.static(process.cwd() + "/public"));
@@ -31,7 +31,7 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
-    cookie: { secure: true, sameSite: "none" },
+    cookie: { secure: false, sameSite: "lax" },
     key: "express.sid",
     store: store,
   })
@@ -64,8 +64,10 @@ myDB(async (client) => {
 
   io.on("connection", (socket) => {
     ++currentUsers;
+    const username = socket?.request?.user?.username || "Anonymous";
+
     io.emit("user", {
-      username: socket.request.user.username,
+      username,
       currentUsers,
       connected: true,
     });
@@ -79,7 +81,7 @@ myDB(async (client) => {
 
     socket.on("chat message", (message) => {
       io.emit("chat message", {
-        username: socket.request.user.username,
+        username,
         message,
       });
     });

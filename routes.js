@@ -44,9 +44,10 @@ module.exports = function (app, myDatabase) {
               if (err) {
                 res.redirect("/");
               } else {
-                // The inserted document is held within
-                // the ops property of the doc
-                next(null, doc.ops[0]);
+                myDatabase.findOne({ _id: doc.insertedId }, (err, newUser) => {
+                  if (err) return next(err);
+                  next(null, newUser); // pass the full user object
+                });
               }
             }
           );

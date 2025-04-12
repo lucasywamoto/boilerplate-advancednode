@@ -50,7 +50,7 @@ module.exports = function (app, myDatabase) {
               login_count: 1,
             },
           },
-          { upsert: true, nreturnDocument: "after" },
+          { upsert: true, returnDocument: "after" },
           (err, doc) => {
             return cb(null, doc.value);
           }
@@ -64,7 +64,14 @@ module.exports = function (app, myDatabase) {
   });
 
   passport.deserializeUser((id, done) => {
-    myDatabase.findOne({ _id: new ObjectId(id) }, (err, doc) => {
+    let query;
+    try {
+      query = { _id: new ObjectId(id) }; // for local users
+    } catch {
+      query = { id }; // for GitHub users
+    }
+
+    myDatabase.findOne(query, (err, doc) => {
       done(null, doc);
     });
   });
